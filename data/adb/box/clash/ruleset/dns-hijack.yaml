@@ -1,0 +1,4 @@
+# Hikari Nikki ruleset; conditions extracted from the original profile.
+# Applied outbound policy is configured by RULE-SET in the profile.
+payload:
+  - "DST-PORT,53"

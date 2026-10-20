@@ -1,0 +1,59 @@
+# =====================================================
+# Force-Sniff — domain yang WAJIB di-sniff (TLS/HTTP/QUIC)
+# Dipakai: sniffer.force-domain -> "rule-set:Force-Sniff"
+# Taruh di: /etc/nikki/run/ruleset/force-sniff.yaml
+# behavior: domain | format: yaml
+# =====================================================
+payload:
+  # === Google / YouTube ===
+  - "+.google.com"
+  - "+.google.co.id"
+  - "+.googlevideo.com"
+  - "+.gstatic.com"
+  - "+.googleapis.com"
+  - "+.youtube.com"
+  - "+.ytimg.com"
+  - "+.youtu.be"
+
+  # === Sosmed ===
+  - "+.instagram.com"
+  - "+.cdninstagram.com"
+  - "+.facebook.com"
+  - "+.fbcdn.net"
+  - "+.whatsapp.com"
+  - "+.whatsapp.net"
+  - "+.tiktok.com"
+  - "+.tiktokv.com"
+  - "+.tiktokcdn.com"
+  - "+.byteoversea.com"
+  - "+.ibytedtos.com"
+  - "+.discord.com"
+
+  # === Streaming ===
+  - "+.spotify.com"
+  - "+.scdn.co"
+  - "+.netflix.com"
+  - "+.nflxvideo.net"
+  - "+.nflximg.net"
+  - "+.disneyplus.com"
+  - "+.bamgrid.com"
+
+  # === Gaming ===
+  - "+.steampowered.com"
+  - "+.steamcommunity.com"
+  - "+.epicgames.com"
+  - "+.riotgames.com"
+  - "+.roblox.com"
+  - "+.garena.com"
+  - "+.moonton.com"
+  - "+.supercell.com"
+  - "+.hoyoverse.com"
+
+  # === ISP ===
+  - "+.xl.co.id"
+  - "+.axis.co.id"
+  - "+.telkomsel.com"
+  - "+.byu.id"
+  - "+.indosatooredoo.com"
+  - "+.ioh.co.id"
+  - "+.tri.co.id"

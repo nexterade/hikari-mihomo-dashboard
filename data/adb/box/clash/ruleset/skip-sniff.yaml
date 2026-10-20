@@ -1,0 +1,41 @@
+# =====================================================
+# Skip-Sniff — domain yang JANGAN ditimpa hasil sniff
+# Dipakai: sniffer.skip-domain -> "rule-set:Skip-Sniff"
+# Taruh di: /etc/nikki/run/ruleset/skip-sniff.yaml
+# behavior: domain | format: yaml
+# NB: entri "Mijia Cloud" (bawaan lama Clash) DIBUANG — bukan domain valid
+#     (ada spasi), bisa bikin rule-set gagal load.
+# =====================================================
+payload:
+  # === AI Assistant ===
+  - "+.openai.com"
+  - "+.chatgpt.com"
+  - "+.oaistatic.com"
+  - "+.oaiusercontent.com"
+  - "+.anthropic.com"
+  - "+.claude.ai"
+  - "gemini.google.com"
+  - "+.generativelanguage.googleapis.com"
+  - "+.aistudio.google.com"
+  - "+.perplexity.ai"
+  - "+.perplexity.com"
+  - "+.x.ai"
+  - "+.grok.com"
+  - "+.mistral.ai"
+  - "+.copilot.microsoft.com"
+  - "+.copilot.com"
+
+  # === Cloudflare challenge ===
+  - "challenges.cloudflare.com"
+
+  # === Xiaomi / remote desktop ===
+  - "dlg.io.mi.com"
+  - "+.oray.com"
+  - "+.sunlogin.net"
+
+  # === Apple push ===
+  - "+.push.apple.com"
+
+  # === Lokal ===
+  - "+.local"
+  - "+.lan"

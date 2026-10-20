@@ -1,0 +1,47 @@
+proxies:
+  - name: 💭 yukari (¬_¬")
+    server: 13.249.231.85
+    port: 443
+    type: vless
+    uuid: a32ee976-99e7-49a7-9741-760229948914
+    cipher: auto
+    tls: true
+    skip-cert-verify: true
+    servername: d7pu5mzr9c4b0.cloudfront.net
+    network: ws
+    ws-opts:
+      path: /vless
+      headers:
+        Host: d7pu5mzr9c4b0.cloudfront.net
+    udp: true
+  - name: triale9anp
+    server: 13.249.231.85
+    port: 443
+    type: vless
+    uuid: 5d1c2d8c-8d71-4bb7-8810-d461fcc161bf
+    cipher: auto
+    tls: true
+    skip-cert-verify: true
+    servername: d7pu5mzr9c4b0.cloudfront.net
+    network: ws
+    ws-opts:
+      path: /vless
+      headers:
+        Host: d7pu5mzr9c4b0.cloudfront.net
+    udp: true
+  - name: trialx0od3
+    server: 13.249.231.85
+    port: 443
+    type: vmess
+    uuid: b2298be7-a4ac-47ab-ab35-11dc7f3aa492
+    alterId: 0
+    cipher: auto
+    tls: true
+    skip-cert-verify: true
+    servername: d11dymj6ul901r.cloudfront.net
+    network: ws
+    ws-opts:
+      path: /vmess
+      headers:
+        Host: d11dymj6ul901r.cloudfront.net
+    udp: true

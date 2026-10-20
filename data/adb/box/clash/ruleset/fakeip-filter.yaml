@@ -1,0 +1,31 @@
+# =====================================================
+# FakeIP-Filter — domain yang di-resolve REAL-IP (bukan fake-ip)
+# Dipakai: dns.fake-ip-filter -> "rule-set:FakeIP-Filter"
+# behavior: domain | format: yaml  (HANYA domain, jangan taruh IP-CIDR di sini)
+# [v3] Baris IP-CIDR dibuang (core ngasih warning "invalid domain" & nggak ada efeknya);
+#      CIDR Telegram/XL dipindah ke smartmode.yaml. "*.lan" -> "+.lan" biar subdomain bertingkat ikut.
+# =====================================================
+payload:
+  # === LAN / sistem ===
+  - "+.lan"
+  - "+.local"
+  - "+.localdomain"
+  - "+.home.arpa"
+  # === NTP / STUN ===
+  - "*.ntp.*"
+  - "+.pool.ntp.org"
+  - "time.*.com"
+  - "time.android.com"
+  - "+.stun.*.*"
+  - "+.stun.*.*.*"
+  # === Captive portal / cek koneksi ===
+  - "+.msftconnecttest.com"
+  - "+.msftncsi.com"
+  - "connectivitycheck.gstatic.com"
+  - "+.connectivitycheck.android.com"
+  - "+.captive.apple.com"
+  - "detectportal.firefox.com"
+  # === Console / game NAT test ===
+  - "+.srv.nintendo.net"
+  - "+.stun.playstation.net"
+  - "+.xboxlive.com"

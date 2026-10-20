@@ -1,0 +1,126 @@
+# XL Axiata — proxy provider (file lokal)
+# [v3] node duplikat dibuang, field `cipher` dihapus (bukan field VLESS, diabaikan core).
+# skip-cert-verify: true dipertahankan karena SNI sengaja beda dari host asli (bug host / SNI spoof).
+proxies:
+- name: 💭 HIKARI 2 ≽^•⩊•^≼
+  server: 13.249.231.85
+  port: 443
+  type: vless
+  uuid: 6c3b39e0-d015-4ff1-9b56-3a5fb0ef53c3
+  tls: true
+  skip-cert-verify: true
+  servername: djg76l2dbzqkn.cloudfront.net
+  network: ws
+  ws-opts:
+    path: /vless
+    headers:
+      Host: djg76l2dbzqkn.cloudfront.net
+  udp: true
+- name: 💭 Hikari-TLS [IG]
+  server: singapura.vpnstore28.my.id
+  port: 443
+  type: vless
+  uuid: dea1eb8b-d256-4398-be5d-3c36bc29f894
+  tls: true
+  skip-cert-verify: true
+  servername: instagram.com
+  network: ws
+  ws-opts:
+    path: /vless
+    headers:
+      Host: singapura.vpnstore28.my.id
+  udp: true
+- name: 💭 Hikari-GRPC [IG]
+  server: singapura.vpnstore28.my.id
+  port: 443
+  type: vless
+  uuid: dea1eb8b-d256-4398-be5d-3c36bc29f894
+  tls: true
+  skip-cert-verify: true
+  servername: instagram.com
+  network: grpc
+  grpc-opts:
+    grpc-service-name: vless
+  udp: true
+- name: 💭 HIKARI ≽^•⩊•^≼
+  server: 18.161.49.127
+  port: 443
+  type: vless
+  uuid: 6c3b39e0-d015-4ff1-9b56-3a5fb0ef53c3
+  tls: true
+  skip-cert-verify: true
+  servername: djg76l2dbzqkn.cloudfront.net
+  network: ws
+  ws-opts:
+    path: /vless
+    headers:
+      Host: djg76l2dbzqkn.cloudfront.net
+  udp: true
+- name: 💭 13.249.231.85
+  server: 13.249.231.85
+  port: 443
+  type: vless
+  uuid: 6c3b39e0-d015-4ff1-9b56-3a5fb0ef53c3
+  tls: true
+  skip-cert-verify: true
+  servername: djg76l2dbzqkn.cloudfront.net
+  network: ws
+  ws-opts:
+    path: /vless
+    headers:
+      Host: djg76l2dbzqkn.cloudfront.net
+  udp: true
+- name: 💭 103.189.234.156
+  server: 103.189.234.156
+  port: 443
+  type: vless
+  uuid: 6c3b39e0-d015-4ff1-9b56-3a5fb0ef53c3
+  tls: true
+  skip-cert-verify: true
+  servername: djg76l2dbzqkn.cloudfront.net
+  network: ws
+  ws-opts:
+    path: /vless
+    headers:
+      Host: djg76l2dbzqkn.cloudfront.net
+  udp: true
+- name: 💭 172.64.144.4
+  server: 172.64.144.4
+  port: 443
+  type: vless
+  uuid: 6c3b39e0-d015-4ff1-9b56-3a5fb0ef53c3
+  tls: true
+  skip-cert-verify: true
+  servername: djg76l2dbzqkn.cloudfront.net
+  network: ws
+  ws-opts:
+    path: /vless
+    headers:
+      Host: djg76l2dbzqkn.cloudfront.net
+  udp: true
+- name: 💭 54.192.164.129
+  server: 54.192.164.129
+  port: 443
+  type: vless
+  uuid: 6c3b39e0-d015-4ff1-9b56-3a5fb0ef53c3
+  tls: true
+  skip-cert-verify: true
+  servername: djg76l2dbzqkn.cloudfront.net
+  network: ws
+  ws-opts:
+    path: /vless
+    headers:
+      Host: djg76l2dbzqkn.cloudfront.net
+  udp: true
+- name: 💭 AKARI >ᴗ<
+  server: 18.161.49.121
+  port: 443
+  type: vless
+  uuid: 3bbd405a-a237-483e-9231-fe432cd5fe85
+  tls: true
+  skip-cert-verify: true
+  servername: idvip.nadiavpnstore.my.id
+  network: grpc
+  grpc-opts:
+    grpc-service-name: vless
+  udp: true

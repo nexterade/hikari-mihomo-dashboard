@@ -1,0 +1,314 @@
+# =====================================================
+# HIKARI v4 — Android (Box for Root / Clash for Magisk)  [varian BFR]
+# Core: Mihomo (Meta) >= 1.19. Simpan sebagai config.yaml di /data/adb/box/clash/
+# Folder proxy/, ruleset/, ui/ ada di samping config.yaml.
+# Fitur : Unblock +18, DNS Uncensored (DoH only), AdBlock,
+#         Sniffer Enhanced, DNS Anti-Leak, Banking Direct, WiFi group
+# =====================================================
+
+# === ANDROID PORTS ===
+mixed-port: 7890
+port: 7891
+socks-port: 7892
+redir-port: 9797
+tproxy-port: 9898
+
+# Dashboard (zashboard): http://127.0.0.1:9090/ui   secret: hikari
+# NB: secret 'hikari' gampang ditebak; app lain di HP bisa akses 127.0.0.1:9090. Ganti kalau perlu.
+external-controller: 127.0.0.1:9090
+secret: 'hikari'
+# metacubexd dibundel di folder ui/ (install.sh ikut copy). Tanpa external-ui-name/url -> nggak ada download.
+external-ui: ui
+
+mode: rule
+allow-lan: true
+bind-address: "*"
+log-level: warning
+unified-delay: true
+geodata-mode: true
+geodata-loader: memconservative
+ipv6: false
+# [v4] Deteksi per-app: tiap koneksi dilabeli nama package app-nya (kayak Proxifier).
+# Hasilnya keliatan di dashboard > Connections (kolom Process) dan dipakai rule kategori app di bawah.
+find-process-mode: always   # [v4] wajib biar Connections nampilin app (package) tiap koneksi
+keep-alive-interval: 15
+geo-auto-update: false
+geo-update-interval: 24
+tcp-concurrent: true
+
+# TUN/tproxy dikelola Box (settings.ini), bukan di sini.
+profile:
+  store-selected: true
+  store-fake-ip: true
+
+# =====================================================
+# SNIFFER — ENHANCED
+# =====================================================
+sniffer:
+  enable: true
+  override-destination: true     # domain hasil sniff menggantikan IP -> rule domain & group kategori kena
+  force-dns-mapping: true        # koneksi fake-ip: ambil domain dari mapping DNS
+  parse-pure-ip: true            # koneksi langsung ke IP: tetap disniff biar ketahuan domainnya
+  # Daftar ada di ruleset/skip-sniff.yaml & force-sniff.yaml
+  skip-domain:
+    - "rule-set:Skip-Sniff"
+  force-domain:
+    - "rule-set:Force-Sniff"
+  skip-dst-address:              # trafik LAN/loopback nggak perlu disniff
+    - 10.0.0.0/8
+    - 172.16.0.0/12
+    - 192.168.0.0/16
+    - 127.0.0.0/8
+    - 224.0.0.0/4
+  sniff:
+    TLS:
+      ports: [443, 8443]
+    HTTP:
+      ports: [80, 8080-8880]
+      override-destination: true
+    QUIC:
+      ports: [443, 8443]
+
+# =====================================================
+# DNS — ANTI LEAK + UNCENSORED
+# [v2] DoH only, resolver non-filter, query ikut rule (lewat tunnel).
+#      Ini yang bikin DNS-hijack ISP (CNAME SafeSearch / Internet Positif) nggak ngefek.
+# =====================================================
+dns:
+  cache-algorithm: arc
+  enable: true
+  prefer-h3: false
+  ipv6: false
+  listen: 0.0.0.0:1053   # Box tproxy ngarahin DNS ke port ini
+  use-hosts: true
+  enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.1/16
+  fake-ip-filter-mode: blacklist
+  respect-rules: true
+
+  # Bootstrap doang (resolve hostname server DoH). DNS ISP sengaja DIHAPUS dari sini.
+  default-nameserver:
+    - 1.1.1.1
+    - 8.8.8.8
+    - 9.9.9.9
+
+  # Resolve hostname server proxy (sebelum tunnel hidup)
+  proxy-server-nameserver:
+    - https://1.1.1.1/dns-query
+    - https://dns.google/dns-query
+
+  # [v2] DoH only. Plain UDP 9.9.9.9 / 94.140.14.14 DIHAPUS: ISP bisa nyuntik jawaban palsu
+  # lebih cepat dari jawaban asli, dan Mihomo ambil jawaban yang datang duluan.
+  # AdGuard (filtering) diganti resolver netral; adblock udah ditangani rule-set.
+  nameserver:
+    - https://1.1.1.1/dns-query
+    - https://8.8.8.8/dns-query
+    - https://dns10.quad9.net/dns-query   # Quad9 "unsecured": tanpa blokir/filter, no-log IP, anycast ada PoP Asia
+
+  # [v2] hosts pin IP Google/Bing + nameserver-policy Google DIHAPUS:
+  #  - pin IP statis nggak bypass SafeSearch (SafeSearch itu CNAME di DNS, bukan di IP)
+  #    dan IP-nya basi/rawan salah region; mapping forcesafesearch -> 216.239.38.120
+  #    malah nunjuk ke IP SafeSearch asli.
+  #  - policy Google isinya sama persis kayak nameserver global = no-op.
+  #  - fallback + fallback-filter DIHAPUS: jalan paralel di tiap query, dan isinya
+  #    ada DNS ISP (112.215.203.254) plain = bocor tiap lookup. DoH udah anti-poison.
+
+  # [ramping] isi filter dipindah ke ruleset/fakeip-filter.yaml
+  fake-ip-filter:
+    - "rule-set:FakeIP-Filter"
+
+  # OPSIONAL — domain yang DIRECT (bank/e-wallet/ISP) lebih pas di-resolve pakai DNS lokal
+  # biar dapat IP edge Indonesia. Aktifkan kalau ada app lokal yang lemot/error.
+  # DNS ISP itu spesifik SIM (ini punya XL) -> ganti kalau pindah kartu.
+  # nameserver-policy:
+  #   '+.bca.co.id,+.klikbca.com,+.bankmandiri.co.id,+.bni.co.id,+.bri.co.id,+.xl.co.id,+.myxl.co.id':
+  #     - 112.215.203.254
+
+# =====================================================
+# PROXIES (BUILT-IN)
+# =====================================================
+proxies:
+  - name: "🎮 Direct"
+    type: direct
+    udp: true
+  - name: "✂️ Reject"
+    type: reject
+  - name: "🐬 Hijack"
+    type: dns
+
+# =====================================================
+# PROXY GROUPS
+# =====================================================
+proxy-groups:
+  - name: "🧩 Inject"
+    type: select
+    use: [XL Axiata, Telkomsel]
+    proxies: ["🔥 AUTO MODE", "👻 PROXY LIST", "🎮 Direct", "✂️ Reject"]   # default = AUTO MODE
+    icon: https://files.catbox.moe/xx70kg.png
+  - name: "🔥 AUTO MODE"
+    type: url-test
+    disable-udp: false
+    use: [XL Axiata, Telkomsel]
+    url: http://www.gstatic.com/generate_204
+    interval: 300
+    tolerance: 50
+    lazy: true
+    timeout: 5000
+    expected-status: 204
+    icon: https://files.catbox.moe/kw3shk.png
+  - name: "👻 PROXY LIST"
+    type: select
+    use: [XL Axiata, Telkomsel]
+    icon: https://files.catbox.moe/9clv83.png
+  - name: "✨ SMART ROUTING"
+    type: select
+    proxies: ["🧩 Inject", "🎮 Direct", "✂️ Reject"]   # default = Inject
+    icon: https://files.catbox.moe/o93ies.png
+  - name: "🛑 BLOCKER"
+    type: select
+    proxies: ["✂️ Reject", "🧩 Inject", "🎮 Direct"]
+    icon: https://files.catbox.moe/8l0qhy.png
+  - name: "🔞 PLUSPLUS"
+    type: select
+    proxies: ["✂️ Reject", "🧩 Inject", "🎮 Direct"]   # default = Reject
+    icon: https://files.catbox.moe/be6jxn.png
+  # [v4] Semua trafik dari koneksi WiFi (hotspot HP / HP lagi nyambung WiFi). Pilih manual di dashboard.
+  # Sumbernya ditentukan ruleset/wifi.yaml. Default Direct; ganti ke Direct/Reject kapan aja.
+  - name: "📶 WIFI"
+    type: select
+    proxies: ["🎮 Direct", "🧩 Inject", "✂️ Reject"]   # default = Direct
+    icon: https://files.catbox.moe/xx70kg.png
+
+# =====================================================
+# PROXY PROVIDERS — FILE LOKAL
+# File ada di /data/adb/box/clash/proxy/
+# =====================================================
+proxy-providers:
+  XL Axiata:
+    type: file
+    path: ./proxy/xl.yaml
+    health-check:
+      enable: true
+      url: http://www.gstatic.com/generate_204
+      interval: 300
+      lazy: true
+      timeout: 5000
+      expected-status: 204
+
+  Telkomsel:
+    type: file
+    path: ./proxy/tsel.yaml
+    health-check:
+      enable: true
+      url: http://www.gstatic.com/generate_204
+      interval: 300
+      lazy: true
+      timeout: 5000
+      expected-status: 204
+
+# =====================================================
+# RULE PROVIDERS
+# =====================================================
+rule-providers:
+  Blocker:
+    type: http
+    behavior: domain
+    format: mrs
+    url: https://github.com/zxc-rv/ad-filter/releases/latest/download/adlist.mrs
+    interval: 86400
+    path: ./ruleset/blocker.mrs
+    proxy: "🧩 Inject"   # update lewat proxy (github sering diblok ISP); file lokal tetap jadi cadangan
+
+  # [v2] type:file = core GAGAL START kalau plus18.mrs nggak ada. Pastikan file-nya ada.
+  Plusplus:
+    type: file
+    behavior: domain
+    format: mrs
+    path: ./ruleset/plus18.mrs
+
+  # type:file -> core GAGAL START kalau file belum ada (install.sh ngecopy semuanya).
+  FakeIP-Filter:
+    type: file
+    behavior: domain
+    format: yaml
+    path: ./ruleset/fakeip-filter.yaml
+
+  DnsHijack:
+    type: file
+    behavior: classical
+    format: yaml
+    path: ./ruleset/dns-hijack.yaml
+
+  Reject:
+    type: file
+    behavior: classical
+    format: yaml
+    path: ./ruleset/reject.yaml
+
+  Direct:
+    type: file
+    behavior: classical
+    format: yaml
+    path: ./ruleset/direct.yaml
+
+  SmartMode:
+    type: file
+    behavior: classical
+    format: yaml
+    path: ./ruleset/smartmode.yaml
+
+  Inject:
+    type: file
+    behavior: classical
+    format: yaml
+    path: ./ruleset/inject.yaml
+
+  # [v4] Sumber koneksi WiFi (SRC-IP-CIDR). Edit ruleset/wifi.yaml kalau subnet WiFi lu beda.
+  WifiClients:
+    type: file
+    behavior: classical
+    format: yaml
+    path: ./ruleset/wifi.yaml
+
+  # [v4] Dipakai sniffer (skip-domain / force-domain)
+  Skip-Sniff:
+    type: file
+    behavior: domain
+    format: yaml
+    path: ./ruleset/skip-sniff.yaml
+
+  Force-Sniff:
+    type: file
+    behavior: domain
+    format: yaml
+    path: ./ruleset/force-sniff.yaml
+
+# =====================================================
+# RULES
+# =====================================================
+rules:
+  # Local/private destinations must never be sent into proxy groups.
+  - RULE-SET,Direct,DIRECT
+  # DNS hijack + blok DoT/QUIC.
+  - RULE-SET,DnsHijack,🐬 Hijack
+  - RULE-SET,Reject,✂️ Reject
+  # [v4] Sumber WiFi -> group 📶 WIFI (override semua rule di bawah, termasuk Blocker/Smart).
+  #      Mau adblock tetap jalan buat WiFi? pindahin baris ini ke bawah RULE-SET,Blocker.
+  - RULE-SET,WifiClients,📶 WIFI
+  # Specific policy groups before the catch-all.
+  - RULE-SET,Blocker,🛑 BLOCKER
+  - RULE-SET,Plusplus,🔞 PLUSPLUS
+  - RULE-SET,Inject,🧩 Inject
+  - RULE-SET,SmartMode,✨ SMART ROUTING
+  - MATCH,🧩 Inject
+
+# =====================================================
+# EXPERIMENTAL & GEO
+# =====================================================
+experimental:
+  quic-go-disable-gso: true
+
+geox-url:
+  geoip: "https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geoip.dat"
+  geosite: "https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geosite.dat"
+  mmdb: "https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/country.mmdb"

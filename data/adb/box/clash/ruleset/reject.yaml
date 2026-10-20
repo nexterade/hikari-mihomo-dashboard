@@ -1,0 +1,8 @@
+# Reject
+# - DoT (853): paksa DNS lewat DoH/hijack, cegah bypass.
+# - QUIC (UDP 443): [v3] ditolak biar app/browser fallback ke TCP/HTTP2. Node VLESS-WS/gRPC
+#   (CloudFront / bug host) nggak stabil buat QUIC-over-UDP -> video buffering, handshake lambat.
+#   Nggak mau? hapus/komen baris AND di bawah.
+payload:
+  - "DST-PORT,853"
+  - "AND,((NETWORK,UDP),(DST-PORT,443))"

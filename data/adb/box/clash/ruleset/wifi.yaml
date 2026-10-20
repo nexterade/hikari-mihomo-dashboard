@@ -1,0 +1,15 @@
+# =====================================================
+# WifiClients — trafik dari koneksi WiFi (dicocokin lewat IP SUMBER)
+# Dipakai: rules -> RULE-SET,WifiClients,📶 WIFI
+#
+# Cara kerja: koneksi dari WiFi punya IP sumber LAN (192.168.x.x), sedangkan
+# data seluler operator biasanya 10.x / 100.64.x / IP publik.
+#   - Client hotspot HP lu          -> IP sumber 192.168.x.x (Android: 192.168.43.x dsb)
+#   - HP lu sendiri pas nyambung WiFi -> IP sumber = IP WiFi-nya (khusus Box mode tproxy)
+# Cek subnet lu di dashboard > Connections (kolom Source). Sempitin kalau perlu.
+# =====================================================
+payload:
+  - "SRC-IP-CIDR,192.168.0.0/16"
+  # Aktifin kalau subnet WiFi/hotspot lu di range ini (hati-hati: 172.16/12 & 10/8 kadang dipakai CGNAT seluler)
+  # - "SRC-IP-CIDR,172.16.0.0/12"
+  # - "SRC-IP-CIDR,10.0.0.0/8"
